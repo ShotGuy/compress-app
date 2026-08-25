@@ -1,0 +1,358 @@
+.main {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+}
+
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dashboardContainer {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .dashboardContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboardPanel {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.panelHeader h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.globalSettingsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.statBox, .statBoxHighlight {
+  background: var(--surface);
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+}
+
+.statBoxHighlight {
+  border-color: rgba(212, 255, 0, 0.3);
+}
+
+.statBox span, .statBoxHighlight span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statBox strong, .statBoxHighlight strong {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+}
+
+.statBoxHighlight strong {
+  color: var(--success);
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  outline: none;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fileListCompact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.batchActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+@media (max-width: 640px) {
+  .batchActions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.batchButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.batchButtons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fileInfoGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.fileCheckbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.fileItemWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileItem {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fileItemCompact {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fileActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.fileInfo {
+  min-width: 0;
+}
+
+.fileInfo h4 {
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fileInfoCompact {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.fileInfoCompact h4 {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.fileInfo p, .fileInfoCompact p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.btnPrimary,
+.btnSecondary,
+.btnSuccess,
+.btnDanger {
+  padding: 0.75rem 1.5rem;
+  border-radius: 100px; /* Pill shaped buttons */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnDangerCompact {
+  padding: 0.5rem;
+  border-radius: 100px;
+  background: transparent;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.btnDangerCompact:hover {
+  background: var(--error);
+  color: white;
+}
+
+.btnPrimary {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btnSecondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btnSecondary:hover {
+  background: var(--surface-hover);
+}
+
+.btnSuccess {
+  background: var(--success);
+  color: var(--primary-text);
+}
+
+.btnSuccess:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btnDanger {
+  background: transparent;
+  border: 1px solid var(--error);
+  color: var(--error);
+}
+
+.btnDanger:hover:not(:disabled) {
+  background: var(--error);
+  color: white;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 120px;
+}
+
+.progressBar {
+  height: 6px;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.badgeSuccess, .badgeError {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badgeSuccess {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.badgeError {
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--error);
+}
+
+/* Inline Settings */
+.fileSettingsPanel {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.settingGroupInline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settingGroupInline label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.rangeInput {
+  width: 100%;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
