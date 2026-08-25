@@ -74,7 +74,7 @@ export const compressVideoFile = async (
     await ffmpegInstance.exec(ffmpegArgs);
 
     const data = await ffmpegInstance.readFile(finalOutputName);
-    const blob = new Blob([data as Uint8Array], { type: 'video/mp4' });
+    const blob = new Blob([data as any], { type: 'video/mp4' });
     
     // Clean up
     await ffmpegInstance.deleteFile(inputFileName);
