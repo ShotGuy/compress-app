@@ -218,7 +218,7 @@
 .fileInfoCompact {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   min-width: 0;
 }
 
@@ -233,6 +233,31 @@
 .fileInfo p, .fileInfoCompact p {
   font-size: 0.875rem;
   color: var(--text-secondary);
+}
+
+.previewContainer {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-hover);
+  margin-right: 0.5rem;
+}
+
+.imagePreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fileDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
 }
 
 .btnPrimary,

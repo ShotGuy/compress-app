@@ -19,6 +19,7 @@ interface ProcessedFile {
   selected: boolean;
   imageQuality: number;
   videoResolution: string;
+  previewUrl?: string;
 }
 
 export default function Home() {
@@ -62,6 +63,15 @@ export default function Home() {
 
   const removeSelected = () => setFiles(prev => prev.filter(f => !f.selected));
 
+  const handleDownloadFile = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const startCompression = async (fileObj: ProcessedFile) => {
     const fileId = fileObj.id;
     setFiles(prev => prev.map(f => f.id === fileId ? { ...f, status: 'compressing', progress: 0 } : f));
@@ -87,8 +97,10 @@ export default function Home() {
         }, onProgress);
       }
 
+      const previewUrl = URL.createObjectURL(compressedResult);
+
       setFiles(prev => prev.map(f => f.id === fileId ? { 
-        ...f, status: 'done', compressedFile: compressedResult, progress: 100
+        ...f, status: 'done', compressedFile: compressedResult, progress: 100, previewUrl
       } : f));
     } catch (error) {
       setFiles(prev => prev.map(f => f.id === fileId ? { ...f, status: 'error' } : f));
@@ -98,7 +110,7 @@ export default function Home() {
   const compressSelected = async () => {
     // Snapshot the files to compress at the moment the button is clicked
     const selectedFilesToCompress = files.filter(f => f.selected && f.status === 'idle');
-    const CONCURRENCY_LIMIT = 3;
+    const CONCURRENCY_LIMIT = 1; // Diturunkan ke 1 untuk mencegah Browser GPU/Canvas memory exhaustion (Gambar hitam)
     let index = 0;
     
     const executeNext = async (): Promise<void> => {
@@ -291,15 +303,26 @@ export default function Home() {
                       className={styles.fileCheckbox}
                     />
                     <div className={isCompactMode ? styles.fileInfoCompact : styles.fileInfo}>
-                      <h4 title={file.originalFile.name}>{file.originalFile.name}</h4>
-                      <p>
-                        Asli: {(file.originalFile.size / 1024 / 1024).toFixed(2)} MB
-                        {file.status === 'done' && file.compressedFile && (
-                          <span style={{ color: 'var(--success)', marginLeft: '12px' }}>
-                            Hasil: {(file.compressedFile.size / 1024 / 1024).toFixed(2)} MB
-                          </span>
-                        )}
-                      </p>
+                      {file.previewUrl && (
+                        <div className={styles.previewContainer}>
+                          {isVideo ? (
+                            <video src={file.previewUrl} className={styles.imagePreview} muted loop playsInline />
+                          ) : (
+                            <img src={file.previewUrl} alt="preview" className={styles.imagePreview} />
+                          )}
+                        </div>
+                      )}
+                      <div className={styles.fileDetails}>
+                        <h4 title={file.originalFile.name}>{file.originalFile.name}</h4>
+                        <p>
+                          Asli: {(file.originalFile.size / 1024 / 1024).toFixed(2)} MB
+                          {file.status === 'done' && file.compressedFile && (
+                            <span style={{ color: 'var(--success)', marginLeft: '12px' }}>
+                              Hasil: {(file.compressedFile.size / 1024 / 1024).toFixed(2)} MB
+                            </span>
+                          )}
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -316,7 +339,19 @@ export default function Home() {
                       </div>
                     )}
                     {file.status === 'done' && (
-                      <span className={styles.badgeSuccess}>Selesai</span>
+                      <>
+                        <span className={styles.badgeSuccess}>Selesai</span>
+                        {file.compressedFile && (
+                          <button 
+                            className={styles.btnSuccess} 
+                            style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
+                            onClick={() => handleDownloadFile(file.compressedFile!)}
+                            title="Download file ini"
+                          >
+                            <Download size={16} />
+                          </button>
+                        )}
+                      </>
                     )}
                     {file.status === 'error' && (
                       <span className={styles.badgeError}>Gagal</span>
