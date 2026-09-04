@@ -22,7 +22,8 @@ interface ProcessedFile {
   videoResolution: string;
   previewUrl?: string;
 }
-
+export default function Home() {
+  const [files, setFiles] = useState<ProcessedFile[]>([]);
   const [globalImageQuality, setGlobalImageQuality] = useState(0.8);
   const [globalVideoQuality, setGlobalVideoQuality] = useState(0.8);
   const [globalVideoResolution, setGlobalVideoResolution] = useState('1280x720');
