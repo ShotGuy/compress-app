@@ -50,9 +50,7 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onFilesSelected }) => {
         type="file" 
         id="file-upload" 
         multiple 
-        // @ts-ignore - webkitdirectory is a valid attribute but React types sometimes complain
-        webkitdirectory=""
-        accept="image/*,video/*"
+        accept="image/*,video/mp4,video/webm,video/quicktime,video/*"
         onChange={handleChange}
         className={styles.input}
       />

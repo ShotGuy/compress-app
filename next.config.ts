@@ -1,23 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "Cross-Origin-Opener-Policy",
-            value: "same-origin",
-          },
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
-          },
-        ],
-      },
-    ];
-  },
+  // Removed strict COOP/COEP headers because we are using single-threaded FFmpeg 
+  // which does not require SharedArrayBuffer. This prevents require-corp from blocking unpkg.
 };
 
 export default nextConfig;

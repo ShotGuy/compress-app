@@ -3,8 +3,10 @@ import { FFmpeg } from '@ffmpeg/ffmpeg';
 let ffmpeg: FFmpeg | null = null;
 
 const customToBlobURL = async (url: string, type: string) => {
+  console.log('[Diagnostic] Mulai mengunduh:', url);
   const response = await fetch(url);
   const buffer = await response.arrayBuffer();
+  console.log('[Diagnostic] Selesai mengunduh:', url);
   const blob = new Blob([buffer], { type });
   return URL.createObjectURL(blob);
 };
@@ -15,6 +17,10 @@ export const loadFFmpeg = async (onProgress?: (progress: number) => void): Promi
   }
 
   ffmpeg = new FFmpeg();
+  
+  ffmpeg.on('log', ({ message }) => {
+    console.log('[FFmpeg Log]', message);
+  });
 
   if (onProgress) {
     ffmpeg.on('progress', ({ progress }) => {
@@ -22,14 +28,11 @@ export const loadFFmpeg = async (onProgress?: (progress: number) => void): Promi
     });
   }
 
-  const coreBaseURL = 'https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm';
-  const ffmpegBaseURL = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm';
+  const coreBaseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
   
   await ffmpeg.load({
     coreURL: await customToBlobURL(`${coreBaseURL}/ffmpeg-core.js`, 'text/javascript'),
     wasmURL: await customToBlobURL(`${coreBaseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-    workerURL: await customToBlobURL(`${coreBaseURL}/ffmpeg-core.worker.js`, 'text/javascript'),
-    classWorkerURL: await customToBlobURL(`${ffmpegBaseURL}/worker.js`, 'text/javascript'),
   });
 
   return ffmpeg;
@@ -62,10 +65,10 @@ export const compressVideoFile = async (
       ffmpegArgs.push('-vf', `scale=${width}:${height}`);
     }
 
-    // Add CRF and preset
+    // Add CRF and force ultrafast for browser stability
     ffmpegArgs.push('-vcodec', 'libx264');
     ffmpegArgs.push('-crf', (options.crf ?? 28).toString());
-    ffmpegArgs.push('-preset', options.preset ?? 'fast');
+    ffmpegArgs.push('-preset', 'ultrafast');
     
     // Convert to mp4 regardless of input (safest for web)
     const finalOutputName = outputFileName.replace(/\.[^/.]+$/, ".mp4");
