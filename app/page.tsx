@@ -23,11 +23,15 @@ interface ProcessedFile {
   previewUrl?: string;
 }
 
-export default function Home() {
-  const [files, setFiles] = useState<ProcessedFile[]>([]);
   const [globalImageQuality, setGlobalImageQuality] = useState(0.8);
   const [globalVideoQuality, setGlobalVideoQuality] = useState(0.8);
   const [globalVideoResolution, setGlobalVideoResolution] = useState('1280x720');
+  const [toast, setToast] = useState<{ message: string; visible: boolean }>({ message: '', visible: false });
+
+  const showToast = (message: string) => {
+    setToast({ message, visible: true });
+    setTimeout(() => setToast(prev => ({ ...prev, visible: false })), 3000);
+  };
 
   const handleFilesSelected = (selectedFiles: File[]) => {
     const newFiles = selectedFiles.map(file => ({
@@ -68,6 +72,7 @@ export default function Home() {
   const removeSelected = () => setFiles(prev => prev.filter(f => !f.selected));
 
   const handleDownloadFile = (file: File) => {
+    showToast(`Mengunduh: ${file.name}...`);
     const url = URL.createObjectURL(file);
     const a = document.createElement('a');
     a.href = url;
@@ -135,6 +140,7 @@ export default function Home() {
 
     if (selectedCompleted.length === 1) {
       // Direct download if only one file
+      showToast(`Mengunduh: ${selectedCompleted[0].compressedFile!.name}...`);
       const file = selectedCompleted[0].compressedFile!;
       const url = URL.createObjectURL(file);
       const a = document.createElement('a');
@@ -150,6 +156,7 @@ export default function Home() {
       zip.file(f.compressedFile!.name, f.compressedFile!);
     });
 
+    showToast(`Mempersiapkan ZIP file...`);
     const content = await zip.generateAsync({ type: 'blob' });
     const url = URL.createObjectURL(content);
     const a = document.createElement('a');
@@ -157,6 +164,7 @@ export default function Home() {
     a.download = 'MediaCompress_Results.zip';
     a.click();
     URL.revokeObjectURL(url);
+    showToast(`Berhasil mengunduh ZIP!`);
   };
 
   // Calculations for Summary Dashboard
@@ -427,6 +435,13 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      {toast.visible && (
+        <div className={styles.toast}>
+          <Download size={18} style={{ marginRight: '8px', color: 'var(--primary)' }} />
+          {toast.message}
+        </div>
+      )}
     </main>
   );
 }

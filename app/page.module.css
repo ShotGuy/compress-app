@@ -352,8 +352,41 @@
 }
 
 .badgeError {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--error);
+  background-color: rgba(255, 68, 68, 0.1);
+  color: #ff4444;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--primary);
+  color: var(--text-primary);
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(204, 255, 0, 0.15);
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+  font-weight: 500;
+  animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* Inline Settings */
