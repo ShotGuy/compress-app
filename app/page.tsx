@@ -18,6 +18,7 @@ interface ProcessedFile {
   progress: number;
   selected: boolean;
   imageQuality: number;
+  videoQuality: number;
   videoResolution: string;
   previewUrl?: string;
 }
@@ -25,6 +26,7 @@ interface ProcessedFile {
 export default function Home() {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
   const [globalImageQuality, setGlobalImageQuality] = useState(0.8);
+  const [globalVideoQuality, setGlobalVideoQuality] = useState(0.8);
   const [globalVideoResolution, setGlobalVideoResolution] = useState('1280x720');
 
   const handleFilesSelected = (selectedFiles: File[]) => {
@@ -35,6 +37,7 @@ export default function Home() {
       progress: 0,
       selected: true, // Auto select new files
       imageQuality: globalImageQuality,
+      videoQuality: globalVideoQuality,
       videoResolution: globalVideoResolution,
     }));
     setFiles(prev => [...prev, ...newFiles]);
@@ -42,7 +45,7 @@ export default function Home() {
 
   const removeFile = (fileId: string) => setFiles(prev => prev.filter(f => f.id !== fileId));
   
-  const updateFileSetting = (fileId: string, key: 'imageQuality' | 'videoResolution', value: any) => {
+  const updateFileSetting = (fileId: string, key: 'imageQuality' | 'videoQuality' | 'videoResolution', value: any) => {
     setFiles(prev => prev.map(f => f.id === fileId ? { ...f, [key]: value } : f));
   };
 
@@ -50,6 +53,7 @@ export default function Home() {
     setFiles(prev => prev.map(f => f.status === 'idle' ? { 
       ...f, 
       imageQuality: globalImageQuality, 
+      videoQuality: globalVideoQuality,
       videoResolution: globalVideoResolution 
     } : f));
   };
@@ -85,9 +89,10 @@ export default function Home() {
       };
 
       if (isVideo) {
+        const mappedCrf = Math.round(40 - ((fileObj.videoQuality - 0.1) / 0.9) * 22);
         compressedResult = await compressVideoFile(fileObj.originalFile, {
           resolution: fileObj.videoResolution,
-          crf: 28,
+          crf: mappedCrf,
         }, onProgress);
       } else {
         const maxSize = (fileObj.originalFile.size / 1024 / 1024) * fileObj.imageQuality;
@@ -201,6 +206,15 @@ export default function Home() {
                     type="range" min="0.1" max="1" step="0.1" 
                     value={globalImageQuality} 
                     onChange={(e) => setGlobalImageQuality(parseFloat(e.target.value))} 
+                    className={styles.rangeInput}
+                  />
+                </div>
+                <div className={styles.settingGroupInline}>
+                  <label>Kualitas Video Default</label>
+                  <input 
+                    type="range" min="0.1" max="1" step="0.1" 
+                    value={globalVideoQuality} 
+                    onChange={(e) => setGlobalVideoQuality(parseFloat(e.target.value))} 
                     className={styles.rangeInput}
                   />
                 </div>
@@ -381,18 +395,30 @@ export default function Home() {
                         />
                       </div>
                     ) : (
-                      <div className={styles.settingGroupInline}>
-                        <label>Resolusi Target</label>
-                        <select 
-                          value={file.videoResolution} 
-                          onChange={(e) => updateFileSetting(file.id, 'videoResolution', e.target.value)}
-                          className={styles.select}
-                        >
-                          <option value="1920x1080">1080p (FHD)</option>
-                          <option value="1280x720">720p (HD)</option>
-                          <option value="854x480">480p (SD)</option>
-                        </select>
-                      </div>
+                      <>
+                        <div className={styles.settingGroupInline}>
+                          <label>Resolusi Target</label>
+                          <select 
+                            value={file.videoResolution} 
+                            onChange={(e) => updateFileSetting(file.id, 'videoResolution', e.target.value)}
+                            className={styles.select}
+                          >
+                            <option value="1920x1080">1080p (FHD)</option>
+                            <option value="1280x720">720p (HD)</option>
+                            <option value="854x480">480p (SD)</option>
+                          </select>
+                        </div>
+                        <div className={styles.settingGroupInline}>
+                          <label>Kualitas Video</label>
+                          <input 
+                            type="range" 
+                            min="0.1" max="1" step="0.1" 
+                            value={file.videoQuality} 
+                            onChange={(e) => updateFileSetting(file.id, 'videoQuality', parseFloat(e.target.value))} 
+                            className={styles.rangeInput}
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
